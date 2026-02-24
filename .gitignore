@@ -20,5 +20,6 @@ dist
 /api/
 /server/build
 /public/build
+/src/lib/db/seed.ts
 
 .tanstack
