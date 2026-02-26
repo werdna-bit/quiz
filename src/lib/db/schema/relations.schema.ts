@@ -1,12 +1,14 @@
 import { relations } from "drizzle-orm";
 import { account, session, user } from "./auth.schema";
+import { courseModules } from "./courseModules.schema";
+import { courses } from "./courses.schema";
+import { modules } from "./modules.schema";
 import { purchaseRequests } from "./purchaseRequests.schema";
 import { questionOptions } from "./questionOptions.schema";
 import { questions } from "./questions.schema";
 import { quizzes } from "./quizzes.schema";
 import { solutions } from "./solutions.schema";
 import { solutionVariables } from "./solutionVariables.schema";
-import { subjects } from "./subjects.schema";
 
 export const userRelations = relations(user, ({ many }) => ({
 	sessions: many(session),
@@ -27,25 +29,41 @@ export const accountRelations = relations(account, ({ one }) => ({
 		references: [user.id],
 	}),
 }));
+export const coursesRelations = relations(courses, ({ many }) => ({
+	courseModules: many(courseModules),
+}));
 
-export const subjectRelations = relations(subjects, ({ many }) => ({
+export const modulesRelations = relations(modules, ({ many }) => ({
+	courseModules: many(courseModules),
 	quizzes: many(quizzes),
 }));
 
-export const quizRelations = relations(quizzes, ({ many }) => ({
-	questions: many(questions),
-	purchases: many(purchaseRequests),
+export const courseModulesRelations = relations(courseModules, ({ one }) => ({
+	course: one(courses, {
+		fields: [courseModules.courseId],
+		references: [courses.id],
+	}),
+	module: one(modules, {
+		fields: [courseModules.moduleId],
+		references: [modules.id],
+	}),
 }));
 
-export const questionRelations = relations(questions, ({ one, many }) => ({
+export const quizzesRelations = relations(quizzes, ({ one, many }) => ({
+	module: one(modules, {
+		fields: [quizzes.moduleId],
+		references: [modules.id],
+	}),
+	questions: many(questions),
+	purchaseRequests: many(purchaseRequests),
+}));
+
+export const questionsRelations = relations(questions, ({ one, many }) => ({
 	quiz: one(quizzes, {
 		fields: [questions.quizId],
 		references: [quizzes.id],
 	}),
-	solution: one(solutions, {
-		fields: [questions.id],
-		references: [solutions.questionId],
-	}),
+	solution: one(solutions),
 	options: many(questionOptions),
 }));
 
@@ -59,7 +77,11 @@ export const questionOptionsRelations = relations(
 	}),
 );
 
-export const solutionRelations = relations(solutions, ({ many }) => ({
+export const solutionsRelations = relations(solutions, ({ one, many }) => ({
+	question: one(questions, {
+		fields: [solutions.questionId],
+		references: [questions.id],
+	}),
 	variables: many(solutionVariables),
 }));
 
@@ -76,10 +98,6 @@ export const solutionVariablesRelations = relations(
 export const purchaseRequestsRelations = relations(
 	purchaseRequests,
 	({ one }) => ({
-		user: one(user, {
-			fields: [purchaseRequests.userId],
-			references: [user.id],
-		}),
 		quiz: one(quizzes, {
 			fields: [purchaseRequests.quizId],
 			references: [quizzes.id],

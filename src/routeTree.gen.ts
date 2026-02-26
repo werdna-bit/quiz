@@ -9,16 +9,23 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as QuizzesRouteRouteImport } from './routes/quizzes/route'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as GuestRouteRouteImport } from './routes/_guest/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as QuizzesQuizIdRouteImport } from './routes/quizzes/$quizId'
 import { Route as GuestSignupRouteImport } from './routes/_guest/signup'
 import { Route as GuestLoginRouteImport } from './routes/_guest/login'
 import { Route as AuthAppRouteRouteImport } from './routes/_auth/app/route'
 import { Route as AuthAppIndexRouteImport } from './routes/_auth/app/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
+const QuizzesRouteRoute = QuizzesRouteRouteImport.update({
+  id: '/quizzes',
+  path: '/quizzes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRouteRoute = AdminRouteRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -36,6 +43,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const QuizzesQuizIdRoute = QuizzesQuizIdRouteImport.update({
+  id: '/$quizId',
+  path: '/$quizId',
+  getParentRoute: () => QuizzesRouteRoute,
 } as any)
 const GuestSignupRoute = GuestSignupRouteImport.update({
   id: '/signup',
@@ -66,17 +78,21 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRoute
+  '/quizzes': typeof QuizzesRouteRouteWithChildren
   '/app': typeof AuthAppRouteRouteWithChildren
   '/login': typeof GuestLoginRoute
   '/signup': typeof GuestSignupRoute
+  '/quizzes/$quizId': typeof QuizzesQuizIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/app/': typeof AuthAppIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRoute
+  '/quizzes': typeof QuizzesRouteRouteWithChildren
   '/login': typeof GuestLoginRoute
   '/signup': typeof GuestSignupRoute
+  '/quizzes/$quizId': typeof QuizzesQuizIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/app': typeof AuthAppIndexRoute
 }
@@ -86,9 +102,11 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteRouteWithChildren
   '/_guest': typeof GuestRouteRouteWithChildren
   '/admin': typeof AdminRouteRoute
+  '/quizzes': typeof QuizzesRouteRouteWithChildren
   '/_auth/app': typeof AuthAppRouteRouteWithChildren
   '/_guest/login': typeof GuestLoginRoute
   '/_guest/signup': typeof GuestSignupRoute
+  '/quizzes/$quizId': typeof QuizzesQuizIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_auth/app/': typeof AuthAppIndexRoute
 }
@@ -97,22 +115,34 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/quizzes'
     | '/app'
     | '/login'
     | '/signup'
+    | '/quizzes/$quizId'
     | '/api/auth/$'
     | '/app/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/login' | '/signup' | '/api/auth/$' | '/app'
+  to:
+    | '/'
+    | '/admin'
+    | '/quizzes'
+    | '/login'
+    | '/signup'
+    | '/quizzes/$quizId'
+    | '/api/auth/$'
+    | '/app'
   id:
     | '__root__'
     | '/'
     | '/_auth'
     | '/_guest'
     | '/admin'
+    | '/quizzes'
     | '/_auth/app'
     | '/_guest/login'
     | '/_guest/signup'
+    | '/quizzes/$quizId'
     | '/api/auth/$'
     | '/_auth/app/'
   fileRoutesById: FileRoutesById
@@ -122,11 +152,19 @@ export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   GuestRouteRoute: typeof GuestRouteRouteWithChildren
   AdminRouteRoute: typeof AdminRouteRoute
+  QuizzesRouteRoute: typeof QuizzesRouteRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/quizzes': {
+      id: '/quizzes'
+      path: '/quizzes'
+      fullPath: '/quizzes'
+      preLoaderRoute: typeof QuizzesRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -154,6 +192,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/quizzes/$quizId': {
+      id: '/quizzes/$quizId'
+      path: '/$quizId'
+      fullPath: '/quizzes/$quizId'
+      preLoaderRoute: typeof QuizzesQuizIdRouteImport
+      parentRoute: typeof QuizzesRouteRoute
     }
     '/_guest/signup': {
       id: '/_guest/signup'
@@ -231,11 +276,24 @@ const GuestRouteRouteWithChildren = GuestRouteRoute._addFileChildren(
   GuestRouteRouteChildren,
 )
 
+interface QuizzesRouteRouteChildren {
+  QuizzesQuizIdRoute: typeof QuizzesQuizIdRoute
+}
+
+const QuizzesRouteRouteChildren: QuizzesRouteRouteChildren = {
+  QuizzesQuizIdRoute: QuizzesQuizIdRoute,
+}
+
+const QuizzesRouteRouteWithChildren = QuizzesRouteRoute._addFileChildren(
+  QuizzesRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
   GuestRouteRoute: GuestRouteRouteWithChildren,
   AdminRouteRoute: AdminRouteRoute,
+  QuizzesRouteRoute: QuizzesRouteRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport

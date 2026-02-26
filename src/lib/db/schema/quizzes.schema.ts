@@ -1,13 +1,13 @@
 import { boolean, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
-import { subjects } from "./subjects.schema";
+import { modules } from "./modules.schema";
 
 export const quizzes = pgTable("quizzes", {
 	id: uuid("id")
 		.primaryKey()
 		.$defaultFn(() => crypto.randomUUID()),
-	subjectId: uuid("subject_id")
+	moduleId: uuid("module_id")
 		.notNull()
-		.references(() => subjects.id, { onDelete: "cascade" }),
+		.references(() => modules.id, { onDelete: "cascade" }),
 	title: text("title").notNull(),
 	description: text("description"),
 	image: text("image"),

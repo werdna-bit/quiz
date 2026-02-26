@@ -51,6 +51,7 @@ export const HeroSection = () => {
 				<Button
 					className="bg-blue-500 hover:bg-blue-400 text-white flex-1 h-11 font-semibold shadow-lg shadow-blue-500/20 transition-all duration-200"
 					render={<Link to="/signup" />}
+					nativeButton={false}
 				>
 					Get Started
 					<ArrowRight size={16} className="ml-1" />
@@ -58,7 +59,8 @@ export const HeroSection = () => {
 				<Button
 					variant="outline"
 					className="flex-1 h-11 border-zinc-700 hover:border-zinc-500 text-zinc-300"
-					render={<Link to="#subjects" />}
+					render={<Link to="/" />}
+					nativeButton={false}
 				>
 					Browse
 				</Button>

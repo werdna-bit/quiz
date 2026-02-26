@@ -3,36 +3,46 @@ import { setResponseStatus } from "@tanstack/react-start/server";
 import { and, eq } from "drizzle-orm";
 import { authMiddleware } from "@/lib/auth/middleware";
 import { db } from "@/lib/db";
-import { purchaseRequests, quizzes, subjects } from "@/lib/db/schema";
+import { modules, purchaseRequests, quizzes } from "@/lib/db/schema";
 
-export const getQuizzesBySubject = createServerFn({ method: "GET" })
+export const getQuizzesByModule = createServerFn({ method: "GET" })
 	.inputValidator((data: { slug: string }) => data)
 	.handler(async ({ data }) => {
-		const [subject] = await db
+		const [module] = await db
 			.select()
-			.from(subjects)
-			.where(eq(subjects.slug, data.slug));
+			.from(modules)
+			.where(eq(modules.slug, data.slug));
 
-		if (!subject) {
-			throw new Error("Subject matching not slug found");
+		if (!module) {
+			throw new Error("Module matching slug not found");
 		}
 
-		const subjectQuizzes = await db
+		const moduleQuizzes = await db
 			.select()
 			.from(quizzes)
-			.where(eq(quizzes.subjectId, subject.id));
+			.where(eq(quizzes.moduleId, module.id));
 
-		return subjectQuizzes;
+		return moduleQuizzes;
 	});
 
-export const getQuiz = createServerFn({ method: "GET" })
+export const getQuizByID = createServerFn({ method: "GET" })
 	.inputValidator((data: { id: string }) => data)
 	.handler(async ({ data }) => {
-		const [quiz] = await db
-			.select()
-			.from(quizzes)
-			.where(eq(quizzes.id, data.id));
-
+		const quiz = await db.query.quizzes.findFirst({
+			where: eq(quizzes.id, data.id),
+			with: {
+				questions: {
+					orderBy: (questions, { asc }) => [asc(questions.orderIndex)],
+					columns: {
+						id: true,
+						body: true,
+						orderIndex: true,
+						type: true,
+					},
+				},
+			},
+		});
+		if (!quiz) throw new Error("Quiz not found");
 		return quiz;
 	});
 

@@ -50,12 +50,14 @@ function HomePage() {
 						<Button
 							variant="ghost"
 							className="text-zinc-400 hover:text-white h-9 px-4 text-sm"
+							nativeButton={false}
 							render={<Link to="/login" />}
 						>
 							Sign In
 						</Button>
 						<Button
 							className="bg-blue-500 hover:bg-blue-400 text-white h-9 px-4 text-sm font-semibold shadow-lg shadow-blue-500/20"
+							nativeButton={false}
 							render={<Link to="/signup" />}
 						>
 							Sign Up
@@ -111,6 +113,7 @@ function HomePage() {
 							<Button
 								variant="outline"
 								className="w-full h-10 border-zinc-700"
+								nativeButton={false}
 								render={<Link to="/login" />}
 							>
 								Sign In
@@ -118,6 +121,7 @@ function HomePage() {
 							<Button
 								className="w-full h-10 bg-blue-500 hover:bg-blue-400 text-white font-semibold"
 								render={<Link to="/signup" />}
+								nativeButton={false}
 							>
 								Sign Up
 							</Button>
@@ -168,6 +172,7 @@ function HomePage() {
 								variant="outline"
 								className="w-full h-10 border-zinc-700 hover:border-blue-500 text-sm"
 								render={<Link to="/signup" />}
+								nativeButton={false}
 							>
 								Get Started
 							</Button>
@@ -193,6 +198,7 @@ function HomePage() {
 							</p>
 							<Button
 								className="w-full h-10 bg-blue-500 hover:bg-blue-400 text-white font-semibold text-sm shadow-lg shadow-blue-500/20"
+								nativeButton={false}
 								render={<Link to="/signup" />}
 							>
 								Get Full Access
@@ -217,6 +223,7 @@ function HomePage() {
 						<Button
 							className="bg-blue-500 hover:bg-blue-400 text-white h-11 px-8 font-semibold shadow-lg shadow-blue-500/20 mx-auto flex items-center gap-2"
 							render={<Link to="/signup" />}
+							nativeButton={false}
 						>
 							Create Free Account
 							<ArrowRight size={16} />

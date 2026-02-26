@@ -1,3 +1,5 @@
+import type { getNavigationData } from "@/features/navigation/get-navigation";
+
 export type SolutionStep = {
 	id: string;
 	label: string; // "Calculate I = b × h³ / 12"
@@ -7,3 +9,5 @@ export type SolutionStep = {
 };
 
 export type SolutionSteps = SolutionStep[];
+
+export type NavigationReturn = Awaited<ReturnType<typeof getNavigationData>>;
